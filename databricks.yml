@@ -1,0 +1,97 @@
+bundle:
+  name: nyc-taxi-medallion-pipeline
+
+variables:
+  workspace_host:
+    description: Azure Databricks workspace URL, for example https://adb-xxxx.azuredatabricks.net
+  storage_account_name:
+    description: ADLS Gen2 storage account that holds bronze, silver, and gold containers
+  notification_email:
+    description: Email for failure notifications
+    default: you@example.com
+  warehouse_id:
+    description: SQL Warehouse ID for the Lakeview dashboard
+
+workspace:
+  host: ${var.workspace_host}
+
+resources:
+  pipelines:
+    nyc_taxi_medallion:
+      name: NYC Taxi Medallion Pipeline
+      catalog: nyctaxi_databricks
+      schema: default
+      photon: true
+      serverless: false
+      continuous: false
+      development: false
+      configuration:
+        nyc_taxi.storage_account: ${var.storage_account_name}
+        nyc_taxi.catalog: nyctaxi_databricks
+      libraries:
+        - glob:
+            include: transformations/**
+      clusters:
+        - label: default
+          autoscale:
+            min_workers: 2
+            max_workers: 10
+            mode: ENHANCED
+      notifications:
+        - email_recipients:
+            - ${var.notification_email}
+          alerts:
+            - on-update-failure
+            - on-update-fatal-failure
+            - on-flow-failure
+      tags:
+        env: portfolio
+        team: data-engineering
+        project: nyc-taxi-medallion
+
+  dashboards:
+    nyc_taxi_analytics:
+      display_name: NYC Taxi Medallion Pipeline - Analytics Dashboard
+      file_path: ./dashboards/nyc_taxi_analytics.lvdash.json
+      warehouse_id: ${var.warehouse_id}
+
+  jobs:
+    monthly_pipeline_update:
+      name: NYC Taxi - Monthly Pipeline Update
+      schedule:
+        quartz_cron_expression: "0 0 2 1 * ? *"
+        timezone_id: Asia/Kolkata
+      email_notifications:
+        on_failure:
+          - ${var.notification_email}
+      tasks:
+        - task_key: pipeline_update
+          pipeline_task:
+            pipeline_id: ${resources.pipelines.nyc_taxi_medallion.id}
+
+    monthly_maintenance:
+      name: NYC Taxi - Monthly Maintenance
+      schedule:
+        quartz_cron_expression: "0 0 2 2 * ? *"
+        timezone_id: Asia/Kolkata
+      email_notifications:
+        on_failure:
+          - ${var.notification_email}
+      tasks:
+        - task_key: table_maintenance
+          notebook_task:
+            notebook_path: ./maintenance/table_maintenance
+          new_cluster:
+            spark_version: 15.4.x-scala2.12
+            num_workers: 0
+            node_type_id: Standard_DS3_v2
+
+targets:
+  dev:
+    mode: development
+    default: true
+    variables:
+      notification_email: you@example.com
+
+  production:
+    mode: production

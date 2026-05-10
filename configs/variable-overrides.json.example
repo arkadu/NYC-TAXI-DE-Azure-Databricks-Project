@@ -1,0 +1,7 @@
+{
+  "workspace_host": "https://adb-0000000000000000.0.azuredatabricks.net",
+  "storage_account_name": "yourstorageaccount",
+  "notification_email": "you@example.com",
+  "warehouse_id": "0000000000000000"
+}
+

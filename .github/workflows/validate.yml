@@ -1,0 +1,40 @@
+name: Validate NYC Taxi Pipeline
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+jobs:
+  local-contracts:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Run repository contract tests
+        run: python -m unittest discover -s tests
+      - name: Compile Python files
+        run: python -m compileall transformations maintenance tests
+
+  bundle-validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: databricks/setup-cli@main
+      - name: Validate Databricks bundle
+        env:
+          DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
+          DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
+          BUNDLE_VAR_workspace_host: ${{ secrets.DATABRICKS_HOST }}
+          BUNDLE_VAR_storage_account_name: ${{ secrets.AZURE_STORAGE_ACCOUNT_NAME }}
+          BUNDLE_VAR_notification_email: ${{ secrets.NOTIFICATION_EMAIL }}
+          BUNDLE_VAR_warehouse_id: ${{ secrets.DATABRICKS_WAREHOUSE_ID }}
+        run: |
+          if [ -z "$DATABRICKS_HOST" ] || [ -z "$DATABRICKS_TOKEN" ] || [ -z "$BUNDLE_VAR_storage_account_name" ] || [ -z "$BUNDLE_VAR_warehouse_id" ]; then
+            echo "Skipping Databricks bundle validation because workspace/storage/warehouse secrets are not configured."
+            exit 0
+          fi
+          databricks bundle validate --target production
