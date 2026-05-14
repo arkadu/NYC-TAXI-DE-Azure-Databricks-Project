@@ -1,5 +1,3 @@
-# nyc-taxi-Azure Databricks-medallion-pipeline
-=======
 # 🚕 NYC Taxi Medallion Pipeline — Production (External Tables)
 
 > **A production-grade, medallion-architecture data pipeline processing 318M+ NYC taxi records across 4 taxi types with enterprise observability, data quality enforcement, and quarantine workflows — all on external Delta tables stored in Azure Data Lake Storage Gen2.**
@@ -135,7 +133,7 @@ nyc_taxi_medallion_pipeline/
 ### Prerequisites
 
 1. **Databricks Workspace** with Unity Catalog enabled
-2. **Azure Storage Account** (`nyctaxistoragemedalian`) with containers: `bronze`, `silver`, `gold`
+2. **Azure Storage Account** (`${var.storage_account_name}`) with containers: `bronze`, `silver`, `gold`
 3. **External Location** configured in Unity Catalog for ADLS access
 4. **Catalog and Schemas** created:
 
@@ -151,13 +149,13 @@ CREATE SCHEMA IF NOT EXISTS nyctaxi_databricks.audit;
 
 ```sql
 ALTER SCHEMA nyctaxi_databricks.bronze SET MANAGED LOCATION
-  'abfss://bronze@nyctaxistoragemedalian.dfs.core.windows.net/tables';
+  'abfss://bronze@${var.storage_account_name}.dfs.core.windows.net/tables';
 ALTER SCHEMA nyctaxi_databricks.silver SET MANAGED LOCATION
-  'abfss://silver@nyctaxistoragemedalian.dfs.core.windows.net';
+  'abfss://silver@${var.storage_account_name}.dfs.core.windows.net';
 ALTER SCHEMA nyctaxi_databricks.gold SET MANAGED LOCATION
-  'abfss://gold@nyctaxistoragemedalian.dfs.core.windows.net';
+  'abfss://gold@${var.storage_account_name}.dfs.core.windows.net';
 ALTER SCHEMA nyctaxi_databricks.audit SET MANAGED LOCATION
-  'abfss://silver@nyctaxistoragemedalian.dfs.core.windows.net/_audit';
+  'abfss://silver@${var.storage_account_name}.dfs.core.windows.net/_audit';
 ```
 
 ### Deploy Pipeline
@@ -688,4 +686,3 @@ Internal use only — NYC TLC data is publicly available at [nyc.gov/tlc/trip-re
 ---
 
 *Built with Databricks Lakeflow Spark Declarative Pipelines | Photon | Unity Catalog | Delta Lake*
->>>>>>> 0c49182 (Initial commit)
