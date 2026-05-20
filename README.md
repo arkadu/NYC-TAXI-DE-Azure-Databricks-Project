@@ -20,6 +20,12 @@ This pipeline ingests, cleanses, and aggregates NYC Taxi &amp; Limousine Commiss
 
 ---
 
+## 🖼️ Architecture Diagram
+
+![NYC Taxi Medallion Architecture](docs/architecture-diagram.svg)
+
+---
+
 ## 🏗️ Architecture
 
 ```mermaid

@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1200" height="720" viewBox="0 0 1200 720" xmlns="http://www.w3.org/2000/svg">
+  <style>
+    .title { font: bold 28px Arial, sans-serif; fill: #333; }
+    .box { fill: #f7f7f7; stroke: #444; stroke-width: 2px; rx: 18; ry: 18; }
+    .box-source { fill: #f0f7ff; stroke: #0067c5; }
+    .box-ingest { fill: #fff4e6; stroke: #f08000; }
+    .box-bronze { fill: #f5e9db; stroke: #8b4513; }
+    .box-silver { fill: #f2f2f2; stroke: #7d7d7d; }
+    .box-gold { fill: #fff8cd; stroke: #d4af37; }
+    .box-audit { fill: #e7efff; stroke: #2952a3; }
+    .box-consume { fill: #ddf1d9; stroke: #4a7b3d; }
+    .small { font: 16px Arial, sans-serif; fill: #222; }
+    .label { font: bold 18px Arial, sans-serif; fill: #111; }
+    .arrow { stroke: #444; stroke-width: 4; fill: none; marker-end: url(#arrowhead); }
+    .note { font: 14px Arial, sans-serif; fill: #222; }
+    .foot { font: 12px Arial, sans-serif; fill: #555; }
+  </style>
+  <defs>
+    <marker id="arrowhead" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+      <path d="M0,0 L12,6 L0,12 Z" fill="#444" />
+    </marker>
+  </defs>
+  <text x="40" y="40" class="title">NYC Taxi Medallion Architecture</text>
+
+  <rect x="40" y="80" width="260" height="420" class="box box-source" />
+  <text x="80" y="120" class="label">Source</text>
+  <text x="60" y="160" class="small">Yellow Taxi Trips</text>
+  <text x="60" y="190" class="small">Green Taxi Trips</text>
+  <text x="60" y="220" class="small">FHV Trips</text>
+  <text x="60" y="250" class="small">FHV Heavy Trips</text>
+  <text x="60" y="280" class="small">Zone Lookup Reference</text>
+  <text x="60" y="320" class="foot">Source: Public NYC TLC Data</text>
+
+  <rect x="360" y="120" width="260" height="180" class="box box-ingest" />
+  <text x="410" y="160" class="label">Ingestion</text>
+  <text x="380" y="200" class="small">Scheduled ingestion</text>
+  <text x="380" y="230" class="small">Azure Function / Auto Loader</text>
+  <text x="380" y="260" class="small">Raw store in ADLS Gen2</text>
+
+  <rect x="700" y="80" width="220" height="150" class="box box-bronze" />
+  <text x="740" y="120" class="label">Bronze</text>
+  <text x="720" y="155" class="small">Raw Data Store</text>
+  <text x="720" y="180" class="small">Parquet on ADLS Gen2</text>
+  <text x="720" y="205" class="small">Immutable raw data</text>
+
+  <rect x="700" y="250" width="220" height="150" class="box box-silver" />
+  <text x="740" y="290" class="label">Silver</text>
+  <text x="720" y="325" class="small">Transformed Data</text>
+  <text x="720" y="350" class="small">Cleansed, validated,</text>
+  <text x="720" y="375" class="small">deduplicated</text>
+
+  <rect x="700" y="420" width="220" height="150" class="box box-gold" />
+  <text x="740" y="460" class="label">Gold</text>
+  <text x="720" y="495" class="small">Serving Layer</text>
+  <text x="720" y="520" class="small">Delta Lake tables</text>
+  <text x="720" y="545" class="small">Analytics-ready views</text>
+
+  <rect x="960" y="270" width="200" height="200" class="box box-consume" />
+  <text x="1000" y="305" class="label">Consumption</text>
+  <text x="980" y="345" class="small">Databricks SQL</text>
+  <text x="980" y="370" class="small">Dashboards & BI</text>
+  <text x="980" y="395" class="small">Reprovisioning, Reporting</text>
+
+  <rect x="360" y="420" width="260" height="130" class="box box-audit" />
+  <text x="410" y="455" class="label">Audit</text>
+  <text x="380" y="490" class="small">Run Log</text>
+  <text x="380" y="515" class="small">DQ Log</text>
+  <text x="380" y="540" class="small">Row Count / SLA / Errors</text>
+
+  <line x1="300" y1="290" x2="360" y2="290" class="arrow" />
+  <line x1="620" y1="200" x2="700" y2="200" class="arrow" />
+  <line x1="820" y1="230" x2="960" y2="230" class="arrow" />
+  <line x1="820" y1="330" x2="960" y2="330" class="arrow" />
+  <line x1="815" y1="455" x2="960" y2="455" class="arrow" />
+  <line x1="550" y1="520" x2="700" y2="520" class="arrow" />
+  <line x1="700" y1="390" x2="700" y2="420" class="arrow" />
+
+  <text x="500" y="570" class="foot">Security: Unity Catalog + ADLS Gen2 external tables enforce governance and access controls</text>
+</svg>
