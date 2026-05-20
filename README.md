@@ -22,7 +22,9 @@ This pipeline ingests, cleanses, and aggregates NYC Taxi &amp; Limousine Commiss
 
 ## 🖼️ Architecture Diagram
 
-![NYC Taxi Medallion Architecture](docs/architecture-diagram.svg)
+![NYC Taxi Medallion Architecture]
+<img width="1024" height="559" alt="image" src="https://github.com/user-attachments/assets/f23851f5-dac6-4c5d-8a39-a1f60f1d915a" />
+
 
 ---
 
